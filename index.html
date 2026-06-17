@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>পরীক্ষা প্রস্তুতকারক · Exam Maker</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Tiro+Bangla:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper: #F6F1E7;
+    --paper-raised: #FFFDF8;
+    --ink: #211D1A;
+    --ink-soft: #5B5650;
+    --rule: #D9CFB8;
+    --indigo: #2C3470;
+    --indigo-deep: #1B2050;
+    --terracotta: #B5563B;
+    --gold: #C79A3D;
+    --good: #2F7A4F;
+    --bad: #B5563B;
+    --radius: 4px;
+    --shadow: 0 1px 2px rgba(33,29,26,0.06), 0 6px 18px rgba(33,29,26,0.06);
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Hind Siliguri', 'Tiro Bangla', system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    background-image:
+      linear-gradient(transparent 95%, rgba(44,52,112,0.035) 95%);
+    background-size: 100% 2.1rem;
+    z-index: 0;
+  }
+
+  #app {
+    position: relative;
+    z-index: 1;
+    min-height: 100vh;
+  }
+
+  a { color: inherit; text-decoration: none; }
+
+  /* ---------- Header / masthead ---------- */
+  .masthead {
+    border-bottom: 2px solid var(--ink);
+    padding: 22px 24px 16px;
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
+    max-width: 920px;
+    margin: 0 auto;
+  }
+  .masthead .brand {
+    font-family: 'Tiro Bangla', serif;
+    font-size: 1.6rem;
+    letter-spacing: 0.01em;
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+  }
+  .masthead .brand .mark {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    background: var(--terracotta);
+    border-radius: 50%;
+    transform: translateY(-2px);
+  }
+  .masthead .tag {
+    font-size: 0.78rem;
+    color: var(--ink-soft);
+    font-family: 'JetBrains Mono', monospace;
+    letter-spacing: 0.02em;
+  }
+
+  .container {
+    max-width: 920px;
+    margin: 0 auto;
+    padding: 40px 24px 80px;
+  }
+
+  /* ---------- Buttons ---------- */
+  button {
+    font-family: inherit;
+    cursor: pointer;
+    border: none;
+  }
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 13px 22px;
+    border-radius: var(--radius);
+    font-size: 0.95rem;
+    font-weight: 600;
+    transition: transform 0.08s ease, box-shadow 0.15s ease, opacity 0.15s ease;
+    border: 1.5px solid transparent;
+  }
+  .btn:active { transform: translateY(1px); }
+  .btn-primary {
+    background: var(--indigo);
+    color: var(--paper-raised);
+    box-shadow: var(--shadow);
+  }
+  .btn-primary:hover { background: var(--indigo-deep); }
+  .btn-primary:disabled { opacity: 0.45; cursor: not-allowed; }
+  .btn-outline {
+    background: transparent;
+    border-color: var(--ink);
+    color: var(--ink);
+  }
+  .btn-outline:hover { background: var(--ink); color: var(--paper-raised); }
+  .btn-ghost {
+    background: transparent;
+    color: var(--indigo);
+    padding: 8px 4px;
+    font-weight: 600;
+    text-decoration: underline;
+    text-decoration-color: var(--rule);
+    text-underline-offset: 3px;
+  }
+  .btn-sm { padding: 8px 14px; font-size: 0.85rem; }
+  .btn-block { width: 100%; }
+  .btn-danger { background: var(--terracotta); color: var(--paper-raised); }
+
+  /* ---------- Cards / sheets ---------- */
+  .sheet {
+    background: var(--paper-raised);
+    border: 1px solid var(--rule);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 32px;
+  }
+  .sheet + .sheet { margin-top: 24px; }
+
+  .eyebrow {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--terracotta);
+    margin: 0 0 8px;
+  }
+  h1.title {
+    font-family: 'Tiro Bangla', serif;
+    font-size: 2rem;
+    line-height: 1.25;
+    margin: 0 0 6px;
+    color: var(--ink);
+  }
+  h2.section-title {
+    font-family: 'Tiro Bangla', serif;
+    font-size: 1.3rem;
+    margin: 0 0 18px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--rule);
+  }
+  p.lede {
+    color: var(--ink-soft);
+    font-size: 1rem;
+    line-height: 1.6;
+    margin: 0 0 26px;
+  }
+
+  textarea, input {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.88rem;
+    width: 100%;
+    background: var(--paper);
+    border: 1.5px solid var(--rule);
+    border-radius: var(--radius);
+    padding: 12px 14px;
+    color: var(--ink);
+    transition: border-color 0.15s ease;
+  }
+  input[type="text"], input[type="email"] {
+    font-family: 'Hind Siliguri', sans-serif;
+    font-size: 1rem;
+  }
+  textarea { resize: vertical; min-height: 220px; line-height: 1.5; }
+  textarea:focus, input:focus {
+    outline: none;
+    border-color: var(--indigo);
+  }
+  label.field-label {
+    display: block;
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-bottom: 6px;
+    color: var(--ink);
+  }
+  .field { margin-bottom: 20px; }
+  .field .hint {
+    font-size: 0.78rem;
+    color: var(--ink-soft);
+    margin-top: 6px;
+  }
+
+  .row { display: flex; gap: 12px; flex-wrap: wrap; }
+  .row > * { flex: 1; min-width: 200px; }
+
+  .status-msg {
+    margin-top: 14px;
+    font-size: 0.88rem;
+    padding: 10px 14px;
+    border-radius: var(--radius);
+    display: none;
+  }
+  .status-msg.show { display: block; }
+  .status-msg.error { background: #FBEAE5; color: var(--bad); border: 1px solid #E6BBA9; }
+  .status-msg.success { background: #E9F4ED; color: var(--good); border: 1px solid #BFE0CB; }
+  .status-msg.info { background: #EBEDF6; color: var(--indigo); border: 1px solid #C7CCE6; }
+
+  /* ---------- Nav links on home ---------- */
+  .home-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+  }
+  @media (max-width: 700px) {
+    .home-grid { grid-template-columns: 1fr; }
+  }
+  .home-card {
+    background: var(--paper-raised);
+    border: 1px solid var(--rule);
+    border-radius: var(--radius);
+    padding: 28px;
+    box-shadow: var(--shadow);
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .home-card .num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.78rem;
+    color: var(--gold);
+    letter-spacing: 0.05em;
+  }
+  .home-card h3 {
+    font-family: 'Tiro Bangla', serif;
+    font-size: 1.25rem;
+    margin: 0;
+  }
+  .home-card p { color: var(--ink-soft); font-size: 0.92rem; line-height: 1.55; margin: 0; flex: 1; }
+
+  /* ---------- Question review list (on create page) ---------- */
+  .qpreview-list { margin-top: 18px; }
+  .qpreview-item {
+    padding: 14px 0;
+    border-bottom: 1px dashed var(--rule);
+  }
+  .qpreview-item:last-child { border-bottom: none; }
+  .qpreview-item .qnum {
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--terracotta);
+    font-size: 0.78rem;
+    margin-right: 8px;
+  }
+  .qpreview-item .qtext { font-weight: 600; white-space: pre-line; }
+  .qpreview-item .opts {
+    margin-top: 6px;
+    color: var(--ink-soft);
+    font-size: 0.88rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px 18px;
+  }
+
+  /* ---------- Link box ---------- */
+  .link-box {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    background: var(--paper);
+    border: 1.5px dashed var(--rule);
+    border-radius: var(--radius);
+    padding: 14px 16px;
+    margin-top: 16px;
+  }
+  .link-box input {
+    border: none;
+    background: transparent;
+    padding: 0;
+    flex: 1;
+  }
+
+  /* ---------- Exam taking screen ---------- */
+  .progress-bar {
+    height: 4px;
+    background: var(--rule);
+    border-radius: 2px;
+    overflow: hidden;
+    margin-bottom: 24px;
+  }
+  .progress-bar .fill {
+    height: 100%;
+    background: var(--indigo);
+    transition: width 0.25s ease;
+  }
+  .qcard {
+    margin-bottom: 28px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid var(--rule);
+  }
+  .qcard:last-of-type { border-bottom: none; }
+  .qcard .qhead {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+  .qcard .qhead .qno {
+    font-family: 'Tiro Bangla', serif;
+    font-size: 1.1rem;
+    color: var(--terracotta);
+    min-width: 28px;
+  }
+  .qcard .qhead .qtext {
+    font-size: 1.05rem;
+    line-height: 1.6;
+    white-space: pre-line;
+    font-weight: 500;
+  }
+  .opt-list { display: flex; flex-direction: column; gap: 10px; margin-left: 38px; }
+  .opt-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 10px 14px;
+    border: 1.5px solid var(--rule);
+    border-radius: var(--radius);
+    cursor: pointer;
+    transition: border-color 0.12s ease, background 0.12s ease;
+  }
+  .opt-row:hover { border-color: var(--indigo); background: #F1F2F8; }
+  .opt-row.selected {
+    border-color: var(--indigo);
+    background: #E9EBF6;
+  }
+  .opt-row input[type="radio"] {
+    width: auto;
+    margin: 3px 0 0;
+    accent-color: var(--indigo);
+  }
+  .opt-row .opt-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.78rem;
+    color: var(--ink-soft);
+    margin-top: 2px;
+  }
+  .opt-row .opt-text { flex: 1; line-height: 1.5; }
+
+  /* ---------- Results dashboard ---------- */
+  table.results-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.88rem;
+  }
+  table.results-table th, table.results-table td {
+    text-align: left;
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--rule);
+    vertical-align: top;
+  }
+  table.results-table th {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    border-bottom: 2px solid var(--ink);
+  }
+  table.results-table tr:hover td { background: #FBF8F0; }
+  .stat-row { display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 28px; }
+  .stat-box {
+    flex: 1;
+    min-width: 140px;
+    background: var(--paper);
+    border: 1px solid var(--rule);
+    border-radius: var(--radius);
+    padding: 16px 18px;
+  }
+  .stat-box .stat-num {
+    font-family: 'Tiro Bangla', serif;
+    font-size: 1.7rem;
+    color: var(--indigo);
+  }
+  .stat-box .stat-label {
+    font-size: 0.78rem;
+    color: var(--ink-soft);
+    margin-top: 2px;
+  }
+  .answer-detail-toggle {
+    font-size: 0.8rem;
+    color: var(--indigo);
+    text-decoration: underline;
+    cursor: pointer;
+  }
+  .answer-detail {
+    display: none;
+    margin-top: 8px;
+    padding: 10px 12px;
+    background: var(--paper);
+    border-radius: var(--radius);
+    font-size: 0.84rem;
+  }
+  .answer-detail.show { display: block; }
+  .answer-detail .ad-item { padding: 6px 0; border-bottom: 1px dashed var(--rule); }
+  .answer-detail .ad-item:last-child { border-bottom: none; }
+  .answer-detail .ad-q { font-weight: 600; white-space: pre-line; }
+  .answer-detail .ad-a { color: var(--indigo); margin-top: 2px; }
+
+  .empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--ink-soft);
+  }
+  .empty-state .glyph {
+    font-size: 2.4rem;
+    margin-bottom: 12px;
+  }
+
+  .center-screen {
+    min-height: 70vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  footer.site-footer {
+    text-align: center;
+    padding: 30px 20px 50px;
+    color: var(--ink-soft);
+    font-size: 0.8rem;
+  }
+
+  .config-banner {
+    background: #FBEAE5;
+    border-bottom: 2px solid var(--terracotta);
+    color: var(--ink);
+    padding: 12px 24px;
+    font-size: 0.85rem;
+    text-align: center;
+  }
+  .config-banner code {
+    background: rgba(0,0,0,0.06);
+    padding: 1px 6px;
+    border-radius: 3px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  .spinner {
+    display: inline-block;
+    width: 14px;
+    height: 14px;
+    border: 2px solid rgba(255,255,255,0.4);
+    border-top-color: #fff;
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+</style>
+</head>
+<body>
+
+<div id="configBanner" class="config-banner" style="display:none;">
+  Firebase সংযোগ দেওয়া হয়নি। নিচে <code>firebase-config.js</code> ফাইলে আপনার নিজের Firebase প্রজেক্টের কনফিগ দিন। (See README)
+</div>
+
+<div id="app"></div>
+
+<footer class="site-footer">পরীক্ষা প্রস্তুতকারক — পরীক্ষা তৈরি করুন, শেয়ার করুন, উত্তর দেখুন।</footer>
+
+<!-- Firebase SDKs (compat build, simplest for a single static file) -->
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+
+<script src="firebase-config.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,38 @@
+// firestore.rules
+//
+// HOW TO APPLY:
+// 1. In Firebase console, go to Build > Firestore Database > Rules tab.
+// 2. Replace the contents with what's below.
+// 3. Click "Publish".
+//
+// WHAT THIS DOES:
+// - Anyone can READ an exam (so the exam link works for students) and CREATE
+//   a response (so submitting answers works) — but cannot edit or delete
+//   exams or other people's responses.
+// - Anyone with the app can technically create an exam document (since there's
+//   no login system here for simplicity). If you want to lock down exam
+//   creation to only yourself, see the "Optional: add a simple password"
+//   note in the main README.
+
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    match /exams/{examId} {
+      allow read: if true;
+      allow create: if request.resource.data.keys().hasAll(['title', 'questions'])
+                    && request.resource.data.questions is list
+                    && request.resource.data.questions.size() > 0;
+      allow update, delete: if false;
+
+      match /responses/{responseId} {
+        allow read: if true;
+        allow create: if request.resource.data.keys().hasAll(['name', 'answers', 'submittedAt'])
+                      && request.resource.data.name is string
+                      && request.resource.data.name.size() > 0;
+        allow update, delete: if false;
+      }
+    }
+  }
+}
