@@ -410,7 +410,7 @@
       appEl.innerHTML = `
         ${masthead()}
         <div class="container">
-          <div class="eyebrow">পরীক্ষা শুরুর আগে</div>
+          <div class="eyebrow">পরীক্ষার বিষয়</div>
           <h1 class="title">${escapeHtml(exam.title || 'পরীক্ষা')}</h1>
           <p class="lede">${questions.length}টি প্রশ্ন রয়েছে। শুরু করার আগে আপনার নাম দিন।</p>
           <div class="sheet">
@@ -418,10 +418,7 @@
               <label class="field-label" for="studentName">নাম *</label>
               <input type="text" id="studentName" placeholder="আপনার নাম লিখুন" />
             </div>
-            <div class="field">
-              <label class="field-label" for="studentEmail">ইমেইল (ঐচ্ছিক)</label>
-              <input type="email" id="studentEmail" placeholder="you@example.com" />
-            </div>
+           
             <div id="intakeStatus" class="status-msg"></div>
             <button class="btn btn-primary btn-block" id="startBtn">পরীক্ষা শুরু করুন →</button>
           </div>
