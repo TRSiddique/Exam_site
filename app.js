@@ -117,7 +117,7 @@
   function masthead() {
     return `
       <div class="masthead">
-        <a href="#/" class="brand"><span class="mark"></span>পরীক্ষা প্রস্তুতকারক</a>
+        <a href="#/" class="brand"><span class="mark"></span>Tasfiqur's Exam Site</a>
         <span class="tag">EXAM MAKER · ONLINE QUIZ</span>
       </div>
     `;
@@ -418,7 +418,10 @@
               <label class="field-label" for="studentName">নাম *</label>
               <input type="text" id="studentName" placeholder="আপনার নাম লিখুন" />
             </div>
-           
+            <div class="field">
+              <label class="field-label" for="studentEmail">ইমেইল (ঐচ্ছিক)</label>
+              <input type="email" id="studentEmail" placeholder="you@example.com" />
+            </div>
             <div id="intakeStatus" class="status-msg"></div>
             <button class="btn btn-primary btn-block" id="startBtn">পরীক্ষা শুরু করুন →</button>
           </div>
